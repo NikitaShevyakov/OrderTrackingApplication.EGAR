@@ -3,7 +3,7 @@ import {
   TableRow, TableCell, TablePagination,
   TableSortLabel 
 } from '@mui/material';
-import {tableSx, cellSx} from './OrdersTableStyle';
+import {tableSx, cellSx} from '../OrdersPage/OrdersTableStyle';
 import { Order, getOrderStatusLabel } from '../../types/order';
 import { OrdersFilters } from '../../Redux/types/ordersTypes';
 import TableContainer from '@mui/material/TableContainer';

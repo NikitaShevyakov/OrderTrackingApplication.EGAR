@@ -4,7 +4,7 @@ import { RootState } from "../../Redux/store";
 import { CreateOrderData } from "../../types/order";
 import { useCreateOrderMutation, useGetOrdersQuery } from "../../api/ordersApi";
 import { OrdersParams } from "../../api/types/orders";
-import OrdersTable from "../../components/OrdersTable/OrdersTable";
+import OrdersTable from "./OrdersTable";
 import { setPage, setLimit } from "../../Redux/orderSlice";
 import "./OrdersPage.scss";
 

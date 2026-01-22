@@ -4,7 +4,7 @@ import { baseQueryWithNiceError } from './baseQuery';
 import { OrdersResponse, OrdersParams } from "./types/orders";
 import { CreateOrderData, Order } from "../types/order";
 
-const BASE_URL = "https://localhost:44370/api/v1/meteorites";
+const BASE_URL = import.meta.env.VITE_API_OTA_URL;
 
 export const ordersApi = createApi({
   reducerPath: "ordersApi",
