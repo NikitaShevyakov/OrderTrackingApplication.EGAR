@@ -23,6 +23,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EGAR.Api", "EGAR.Api\EGAR.A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EGAR.Infrastructure.Data.MsSQL", "EGAR.Infrastructure.Data.MsSQL\EGAR.Infrastructure.Data.MsSQL.csproj", "{0FBB7A20-DEF3-1D41-A57F-C7A60C837376}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedConfiguration", "SharedConfiguration", "{5CD8E798-88F2-47C1-9853-2254308CB2C9}"
+	ProjectSection(SolutionItems) = preProject
+		appsettings.json = appsettings.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

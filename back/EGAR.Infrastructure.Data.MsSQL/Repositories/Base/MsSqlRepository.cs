@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EGAR.Infrastructure.Data.MsSQL.Repositories.Base;
 
-public class MsSqlRepository<TEntity > where TEntity : class
+public class MsSqlRepository<TEntity> where TEntity : class
 {
     readonly AppDbContext _dbContext;
     readonly DbSet<TEntity> _dbSet;

@@ -9,16 +9,16 @@ public record OrdersListQuery() : IRequest<Result<IEnumerable<Order>>>;
 
 public class OrdersListQueryHandler : IRequestHandler<OrdersListQuery, Result<IEnumerable<Order>>>
 {
-    private readonly IRepository<Order> _repository;
+    private readonly IOrderRepository _orderRepository;
 
-    public OrdersListQueryHandler(IRepository<Order> repository)
+    public OrdersListQueryHandler(IOrderRepository orderRepository)
     {
-        _repository = repository;
+        _orderRepository = orderRepository;
     }
 
     public async Task<Result<IEnumerable<Order>>> Handle(OrdersListQuery request, CancellationToken ct = default)
     {
-        var orders = await _repository.GetAllAsync(ct);
+        var orders = await _orderRepository.GetAllAsync(ct);
         return Result<IEnumerable<Order>>.Success(orders);
     }
 }
