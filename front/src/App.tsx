@@ -1,5 +1,5 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { Container, Typography, Box } from "@mui/material";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Container, Typography } from "@mui/material";
 
 import OrdersPage from "./pages/OrdersPage/OrdersPage";
 

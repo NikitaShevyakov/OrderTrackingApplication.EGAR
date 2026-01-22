@@ -25,12 +25,10 @@ const OrdersPage = () => {
 
   const { 
     data: orders,
-    isFetching: isFetchingOrders,
     isError: isErrorFetchingOrders,
-    error: ordersError,
     refetch: refetchOrders
   } = useGetOrdersQuery(params);
-  const [createOrder, { isLoading, isError: isCreateOrderError, isSuccess: isCreateOrderSuccess }] = useCreateOrderMutation();
+  const [createOrder, { isError: isCreateOrderError, isSuccess: isCreateOrderSuccess }] = useCreateOrderMutation();
 
   const rows = orders?.orders ?? [];
   const total = orders?.total ?? 0;

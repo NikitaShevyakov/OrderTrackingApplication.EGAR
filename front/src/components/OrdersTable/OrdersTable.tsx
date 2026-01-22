@@ -1,13 +1,11 @@
-import { useRef } from 'react';
 import {
   Paper, Table, TableHead, TableBody, TableFooter, Box,
   TableRow, TableCell, TablePagination,
   TableSortLabel 
 } from '@mui/material';
-import {ScrollArea, tableSx, cellSx, TotalsRow} from './OrdersTableStyle';
+import {tableSx, cellSx} from './OrdersTableStyle';
 import { Order, getOrderStatusLabel } from '../../types/order';
 import { OrdersFilters } from '../../Redux/types/ordersTypes';
-import { CustomScrollbar } from '../CustomScrollbar';
 import TableContainer from '@mui/material/TableContainer';
 
 interface OrdersTableProps {
@@ -26,8 +24,6 @@ const OrdersTable = ({
   onRowsPerPageChange
 }: OrdersTableProps) => {
     
-  const scrollRef = useRef<HTMLElement>(null);
-
   // данные текущей страницы
   const page = filters.page - 1;
   const rowsPerPage = filters.limit;
@@ -65,11 +61,9 @@ const OrdersTable = ({
 
           <Box sx={{ height: '400px', position: 'relative', overflowY: 'scroll' }}>
             <TableContainer >
-            {/* <ScrollArea ref={scrollRef} sx={{ height: '100%' }}> */}
               <Table sx={tableSx}>
                 <TableBody>
                   {rows.map((order: Order) => {
-                    // const year = new Date(date).getFullYear();
                     return (
                       <TableRow hover key={order.id}>
                         <TableCell align="center" sx={cellSx}>{order.orderNumber}</TableCell>
@@ -81,8 +75,6 @@ const OrdersTable = ({
                   })}
                 </TableBody>
               </Table>
-            {/* </ScrollArea>
-            <CustomScrollbar containerRef={scrollRef} rows={rows} /> */}
             </TableContainer>
           </Box>
 
