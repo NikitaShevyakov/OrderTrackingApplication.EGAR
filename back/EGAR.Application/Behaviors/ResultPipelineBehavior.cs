@@ -1,4 +1,4 @@
-﻿using EGAR.SharedKernel;
+﻿using EGAR.SharedKernel.Models;
 using MediatR;
 using Microsoft.Extensions.Logging;
 

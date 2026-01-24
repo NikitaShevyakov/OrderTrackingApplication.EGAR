@@ -1,0 +1,47 @@
+version: "1.0"
+
+services:
+  sql-server:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    restart: unless-stopped
+    ports:
+      - "1405:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "StrongP@ssw0rd!"
+      MSSQL_PID: "Express"
+    networks:
+      - egarNetwork        
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "StrongP@ssw0rd!", "-Q", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # egar-web-api:
+  #   build:
+  #     context: ./back
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "5011:80"
+  #   restart: unless-stopped
+  #   # depends_on:
+  #   #   sql-server:
+  #   #     condition: service_healthy
+  #   networks:
+  #     - egarNetwork
+
+  egar-web-ui:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    ports:
+      - "4173:4173"
+    restart: unless-stopped
+    networks:
+      - egarNetwork
+
+networks:
+  egarNetwork:
+    driver: bridge

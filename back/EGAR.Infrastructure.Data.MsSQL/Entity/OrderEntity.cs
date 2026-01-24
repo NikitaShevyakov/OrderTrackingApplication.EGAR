@@ -1,8 +1,9 @@
-﻿namespace EGAR.Infrastructure.Data.MsSQL.Entities;
+﻿using EGAR.Infrastructure.Data.MsSQL.Entity;
 
-public class OrderEntity
+namespace EGAR.Infrastructure.Data.MsSQL.Entities;
+
+public class OrderEntity : BaseEntity
 {
-    public int Id { get; set; }
     public string OrderNumber { get; set; } = default!;
     public string Description { get; set; } = default!;
     public int Status { get; set; }

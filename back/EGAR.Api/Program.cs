@@ -31,6 +31,8 @@ public class Program
             app.UseSwaggerUI();
         }
 
+        app.UseCors("AllowAll");
+
         //app.UseAuthorization();
         app.MapControllers();
     }

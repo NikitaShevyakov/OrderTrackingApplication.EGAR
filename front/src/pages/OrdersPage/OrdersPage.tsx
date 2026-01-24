@@ -5,7 +5,7 @@ import { CreateOrderData } from "../../types/order";
 import { useCreateOrderMutation, useGetOrdersQuery } from "../../api/ordersApi";
 import { OrdersParams } from "../../api/types/orders";
 import OrdersTable from "./OrdersTable";
-import { setPage, setLimit } from "../../Redux/orderSlice";
+import { setPage, setLimit, resetFilters } from "../../Redux/orderSlice";
 import "./OrdersPage.scss";
 
 import { Add as AddIcon } from '@mui/icons-material';
@@ -30,8 +30,9 @@ const OrdersPage = () => {
   } = useGetOrdersQuery(params);
   const [createOrder, { isError: isCreateOrderError, isSuccess: isCreateOrderSuccess }] = useCreateOrderMutation();
 
-  const rows = orders?.orders ?? [];
+  const rows = orders?.items ?? [];
   const total = orders?.total ?? 0;
+  console.log(rows);
 
   const handleCloseModal = () =>{
     setOpenModal(false);
@@ -40,6 +41,7 @@ const OrdersPage = () => {
   useEffect(() => {
     if (isCreateOrderSuccess) {
       refetchOrders();
+      dispatch(resetFilters())
       handleCloseModal();
     }
   }, [isCreateOrderSuccess, refetchOrders]);

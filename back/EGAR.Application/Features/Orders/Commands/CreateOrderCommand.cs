@@ -1,8 +1,8 @@
 ﻿using EGAR.Application.Interfaces;
 using EGAR.Domain.Enums;
 using EGAR.Domain.Models;
-using EGAR.SharedKernel;
 using EGAR.SharedKernel.Enums;
+using EGAR.SharedKernel.Models;
 using MediatR;
 
 namespace EGAR.Application.Features.Orders.Commands
@@ -12,11 +12,11 @@ namespace EGAR.Application.Features.Orders.Commands
 
     public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Result<Order>>
     {
-        readonly IOrderService _orderService;
+        readonly IOrderRepository _orderRepository;
 
-        public CreateOrderCommandHandler(IOrderService orderService)
+        public CreateOrderCommandHandler(IOrderRepository orderRepository)
         {
-            _orderService = orderService;
+            _orderRepository = orderRepository;
         }
 
         public async Task<Result<Order>> Handle(CreateOrderCommand request, CancellationToken ct)
@@ -36,9 +36,7 @@ namespace EGAR.Application.Features.Orders.Commands
                 UpdatedAt = DateTimeOffset.UtcNow
             };
 
-            var result = await _orderService.CreateOrderAsync(order, ct);
-
-            return Result<Order>.Success(result);
+            return await _orderRepository.AddAsync(order, ct); ;
         }
     }
 }

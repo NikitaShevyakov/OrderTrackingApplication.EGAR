@@ -1,10 +1,10 @@
 import { Order } from "../../types/order";
 
 export interface OrdersResponse {
-  orders: Order[];
+  items: Order[];
   total: number;
   page: number;
-  totalPages: number;
+  pageSize: number;
 }
 
 export interface OrdersParams {

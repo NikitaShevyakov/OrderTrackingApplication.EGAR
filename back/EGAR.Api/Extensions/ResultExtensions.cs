@@ -1,5 +1,5 @@
-﻿using EGAR.SharedKernel;
-using EGAR.SharedKernel.Enums;
+﻿using EGAR.SharedKernel.Enums;
+using EGAR.SharedKernel.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EGAR.Api.Extensions;

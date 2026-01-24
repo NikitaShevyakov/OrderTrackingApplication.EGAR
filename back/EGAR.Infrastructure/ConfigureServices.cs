@@ -1,5 +1,6 @@
 ﻿using EGAR.Application.Interfaces;
 using EGAR.Infrastructure.Data.MsSQL;
+using EGAR.Infrastructure.RabbitMQ.Publishers;
 using EGAR.Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +13,7 @@ public static class ConfigureServices
     {
         services.RegisterDataMsSQLServices(configuration);
         services.AddScoped<IOrderService, OrderService>();
+        services.AddTransient<IPublisher, RabbitMqPublisher>();
 
         return services;
     }
