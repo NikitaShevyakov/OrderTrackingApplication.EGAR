@@ -13,3 +13,10 @@ export interface CreateOrderData {
   orderNumber: string;
   description: string;
 }
+
+export interface OrderStatusChangedEvent {
+  OrderId: number;
+  OldStatus: OrderStatus;
+  NewStatus: OrderStatus;
+  ChangedAt: string;
+}

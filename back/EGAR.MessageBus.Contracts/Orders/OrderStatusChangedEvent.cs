@@ -1,6 +1,6 @@
 ﻿using EGAR.Domain.Enums;
 
-namespace EGAR.Infrastructure.RabbitMQ.MessageBus.Events;
+namespace EGAR.MessageBus.Contracts.Orders;
 
 public record OrderStatusChangedEvent(
     int OrderId,

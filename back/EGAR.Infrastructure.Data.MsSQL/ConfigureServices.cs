@@ -1,4 +1,4 @@
-﻿using EGAR.Application.Interfaces;
+﻿using EGAR.Application.Interfaces.Repositories;
 using EGAR.Infrastructure.Data.MsSQL.Context;
 using EGAR.Infrastructure.Data.MsSQL.Repositories;
 using Microsoft.EntityFrameworkCore;

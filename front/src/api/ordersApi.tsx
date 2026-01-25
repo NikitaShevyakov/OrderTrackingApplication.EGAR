@@ -1,5 +1,4 @@
 import { createApi} from "@reduxjs/toolkit/query/react";
-// import { buildQueryParams } from "../utils/buildQueryParams";
 import { baseQueryWithNiceError } from './baseQuery';
 import { OrdersResponse, OrdersParams } from "./types/orders";
 import { CreateOrderData, Order } from "../types/order";
@@ -10,11 +9,12 @@ const BASE_URL = import.meta.env.VITE_API_OTA_URL;
 export const ordersApi = createApi({
   reducerPath: "ordersApi",
   baseQuery: baseQueryWithNiceError(BASE_URL),  
+  tagTypes: ['Orders'],
   endpoints: (builder) => ({
 
     getOrderById: builder.query<Order, number>({
       query: (id) => `orders/${id}`
-    }),
+    }),    
 
     getOrders: builder.query<OrdersResponse, OrdersParams>({
       query: (params) => ({
@@ -22,8 +22,9 @@ export const ordersApi = createApi({
         params: {
           page: params.page || 1,
           limit: params.limit || 10
-        },
-      })
+        }
+      }),
+      providesTags: ['Orders']
     }),
 
     createOrder: builder.mutation<Order, CreateOrderData>({
@@ -31,7 +32,16 @@ export const ordersApi = createApi({
         url: '/orders',
         method: 'POST',
         body: body
-      })    
+      }),
+      invalidatesTags: ['Orders']    
+    }),
+
+    deleteOrder: builder.mutation<void, number>({
+      query: (id) => ({
+        url: `/orders/${id}`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: ['Orders']
     }),
 
     changeOrderStatus: builder.mutation<Order, { id: number; status: OrderStatus }>({
@@ -48,5 +58,6 @@ export const {
   useGetOrderByIdQuery,
   useGetOrdersQuery,
   useCreateOrderMutation,
+  useDeleteOrderMutation,
   useChangeOrderStatusMutation
 } = ordersApi;

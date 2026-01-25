@@ -1,6 +1,6 @@
 ﻿using EGAR.SharedKernel.Models;
 
-namespace EGAR.Application.Interfaces;
+namespace EGAR.Application.Interfaces.Repositories;
 
 public interface IRepository<T> where T : class
 {

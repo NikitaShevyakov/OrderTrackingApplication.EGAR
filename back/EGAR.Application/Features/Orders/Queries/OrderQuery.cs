@@ -1,4 +1,4 @@
-﻿using EGAR.Application.Interfaces;
+﻿using EGAR.Application.Interfaces.Repositories;
 using EGAR.Domain.Models;
 using EGAR.SharedKernel.Enums;
 using EGAR.SharedKernel.Models;
@@ -6,10 +6,7 @@ using MediatR;
 
 namespace EGAR.Application.Features.Orders.Queries;
 
-public record OrderQuery() : IRequest<Result<Order>>
-{
-    public int Id { get; set; }
-}
+public record OrderQuery(int Id) : IRequest<Result<Order>> { }
 
 public class OrderQueryHandler : IRequestHandler<OrderQuery, Result<Order>>
 {

@@ -1,7 +1,7 @@
 ﻿using EGAR.Domain.Models;
-using EGAR.Application.Interfaces;
 using MediatR;
 using EGAR.SharedKernel.Models;
+using EGAR.Application.Interfaces.Repositories;
 
 namespace EGAR.Application.Features.Orders.Queries;
 

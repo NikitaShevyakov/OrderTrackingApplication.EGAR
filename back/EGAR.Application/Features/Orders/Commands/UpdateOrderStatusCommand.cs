@@ -1,6 +1,8 @@
-﻿using EGAR.Application.Interfaces;
+﻿using EGAR.Application.Interfaces.Repositories;
 using EGAR.Domain.Enums;
 using EGAR.Domain.Models;
+using EGAR.MessageBus.Contracts.Orders;
+using EGAR.SharedKernel.Enums;
 using EGAR.SharedKernel.Models;
 using MediatR;
 
@@ -12,13 +14,39 @@ public record UpdateOrderStatusCommand(int Id, OrderStatus Status)
 public class UpdateOrderStatusCommandHandler 
     : IRequestHandler<UpdateOrderStatusCommand, Result<Order>>
 {
-    readonly IOrderService _orderService;
+    readonly IOrderRepository _orderRepository;
+    readonly SharedKernel.Publishers.IPublisher _publisher;
 
-    public UpdateOrderStatusCommandHandler(IOrderService orderService)
+    public UpdateOrderStatusCommandHandler(
+        IOrderRepository orderRepository,
+        SharedKernel.Publishers.IPublisher publisher
+        )
     {
-        _orderService = orderService;
+        _orderRepository = orderRepository;
+        _publisher = publisher;
     }
 
-    public async Task<Result<Order>> Handle(UpdateOrderStatusCommand command, CancellationToken ct)
-        => await _orderService.ChangeStatusAsync(command.Id, command.Status, ct);        
+    public async Task<Result<Order>> Handle(
+        UpdateOrderStatusCommand command,
+        CancellationToken ct)
+    {
+        var order = await _orderRepository.GetByIdAsync(command.Id, ct);
+
+        if (order == null)
+            return Result<Order>.Failure(ErrorType.NotFound, "Order not found");
+
+        var oldStatus = order.Status;
+        var newStatus = command.Status;
+
+        order.Status = newStatus;
+        order.UpdatedAt = DateTimeOffset.UtcNow;
+        var result = await _orderRepository.UpdateAsync(order, ct);
+
+        if (!result.IsSuccess) return result;
+
+        var @event = new OrderStatusChangedEvent(order.Id, oldStatus, newStatus, DateTime.UtcNow);
+        await _publisher.PublishAsync(@event, ct);
+
+        return result;
+    }
 }

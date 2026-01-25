@@ -1,4 +1,4 @@
-﻿using EGAR.Application.Interfaces;
+﻿using EGAR.Application.Interfaces.Repositories;
 using EGAR.Domain.Enums;
 using EGAR.Domain.Models;
 using EGAR.SharedKernel.Enums;

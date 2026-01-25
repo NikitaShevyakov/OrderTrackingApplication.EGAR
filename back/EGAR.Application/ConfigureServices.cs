@@ -1,4 +1,5 @@
 ﻿using EGAR.Application.Behaviors;
+using EGAR.Application.Events;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -12,6 +13,12 @@ public static class ConfigureServices
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
             cfg.AddOpenBehavior(typeof(ResultPipelineBehavior<,>));
         });
+
+        services.AddSingleton<InMemoryOrderStatusEventStream>();
+        services.AddSingleton<IOrderStatusEventStream>(
+            sp => sp.GetRequiredService<InMemoryOrderStatusEventStream>());
+        services.AddSingleton<IOrderStatusEventDispatcher>(
+            sp => sp.GetRequiredService<InMemoryOrderStatusEventStream>());
 
         return services;
     }

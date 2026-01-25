@@ -4,21 +4,23 @@ import {
   IconButton,
   Chip,
 } from '@mui/material';
-import { tableSx, cellSx } from '../OrdersPage/OrdersTableStyle';
-import { Order } from '../../types/order';
-import { getOrderStatusLabel, getStatusColor } from '../../types/orderStatus';
-import { OrdersFilters } from '../../Redux/types/ordersTypes';
+import { tableSx, cellSx } from './OrdersTableStyle';
+import { Order } from '../../../types/order';
+import { getOrderStatusLabel, getStatusColor } from '../../../types/orderStatus';
+import { OrdersFilters } from '../../../Redux/types/ordersTypes';
 import TableContainer from '@mui/material/TableContainer';
 import { Link as RouterLink } from 'react-router-dom';
-import { Edit as EditIcon } from '@mui/icons-material';
-import { formatDateTime } from '../../utils/dateFormatter';
+import { Edit as EditIcon, DeleteForever as DeleteIcon, Delete  } from '@mui/icons-material';
+import { formatDateTime } from '../../../utils/dateFormatter';
 
 interface OrdersTableProps {
   rows: Order[];
   total: number;
   filters: OrdersFilters;
+  isLoading?: boolean;
   onPageChange: (page: number) => void;
   onRowsPerPageChange: (limit: number) => void;
+  onDeleteOrder: (id: number) => void;
 }
 
 const OrdersTable = ({
@@ -26,7 +28,8 @@ const OrdersTable = ({
   total,
   filters,
   onPageChange,
-  onRowsPerPageChange
+  onRowsPerPageChange,
+  onDeleteOrder
 }: OrdersTableProps) => {
 
   return (
@@ -64,6 +67,9 @@ const OrdersTable = ({
                       <TableCell align="center" sx={cellSx}>
                         <IconButton component={RouterLink} to={`/order/${order.id}`} aria-label="Edit">
                           <EditIcon />
+                        </IconButton>
+                        <IconButton onClick={() => {onDeleteOrder(order.id)}} aria-label="Delete">
+                          <DeleteIcon />
                         </IconButton>
                       </TableCell>
                     </TableRow>

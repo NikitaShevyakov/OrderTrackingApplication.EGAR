@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EGAR.Infrastructure.Data.MsSQL\EGAR.Infrastructure.Data.MsSQL.csproj" />
+    <ProjectReference Include="..\EGAR.Infrastructure.RabbitMQ\EGAR.Infrastructure.RabbitMQ.csproj" />
   </ItemGroup>
 
 </Project>

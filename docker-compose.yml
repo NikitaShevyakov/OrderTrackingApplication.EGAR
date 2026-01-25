@@ -1,8 +1,21 @@
 version: "1.0"
 
+networks:
+  egarNetwork:
+    driver: bridge
+
+x-common-environment: &common-environment
+  ConnectionStrings__MsSqlConnection: "Server=sql-server;Database=EGARDB;User=sa;Password=${SA_PASSWORD};TrustServerCertificate=true;MultipleActiveResultSets=true"
+  RabbitMq__Host: "rabbitmq"
+  RabbitMq__Port: "5672"
+  RabbitMq__VirtualHost: "/"
+  RabbitMq__Username: "${RABBITMQ_DEFAULT_USER}"
+  RabbitMq__Password: "${RABBITMQ_DEFAULT_PASS}"
+
 services:
   sql-server:
     image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: egar-sql-server
     restart: unless-stopped
     ports:
       - "1405:1433"
@@ -18,30 +31,52 @@ services:
       timeout: 5s
       retries: 10
       start_period: 30s
+    
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: egar-rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"   # AMQP
+      - "15672:15672" # Web UI
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    networks:
+      - egarNetwork
+
+  # egar-worker:
+  #   build:
+  #     context: ./back
+  #     dockerfile: EGAR.WorkerService/Dockerfile
+  #   container_name: egar-worker
+  #   restart: unless-stopped
+  #   depends_on:
+  #     sql-server:
+  #       condition: service_healthy
+  #   networks:
+  #     - egarNetwork
 
   # egar-web-api:
   #   build:
   #     context: ./back
-  #     dockerfile: Dockerfile
+  #     dockerfile: EGAR.Api/Dockerfile
   #   ports:
   #     - "5011:80"
   #   restart: unless-stopped
-  #   # depends_on:
-  #   #   sql-server:
-  #   #     condition: service_healthy
+  #   depends_on:
+  #     sql-server:
+  #       condition: service_healthy
+  #   <<: *common-environment
   #   networks:
   #     - egarNetwork
 
-  egar-web-ui:
-    build:
-      context: ./front
-      dockerfile: Dockerfile
-    ports:
-      - "4173:4173"
-    restart: unless-stopped
-    networks:
-      - egarNetwork
-
-networks:
-  egarNetwork:
-    driver: bridge
+  # egar-web-ui:
+  #   build:
+  #     context: ./front
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "4173:4173"
+  #   restart: unless-stopped
+  #   networks:
+  #     - egarNetwork
