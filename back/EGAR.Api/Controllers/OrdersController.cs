@@ -64,8 +64,8 @@ namespace EGAR.Api.Controllers
 
                 var json = JsonSerializer.Serialize(evt);
                 await Response.WriteAsync($"data: {json}\n\n", ct);
-                await Response.Body.FlushAsync(ct);
             }            
+            await Response.Body.FlushAsync(ct);
         }
     }
 }

@@ -1,6 +1,4 @@
 ﻿using EGAR.MessageBus.Contracts.Orders;
-using Microsoft.Extensions.Logging;
-using System.Runtime.CompilerServices;
 using System.Threading.Channels;
 
 namespace EGAR.Application.Events;
@@ -8,22 +6,28 @@ namespace EGAR.Application.Events;
 public class InMemoryOrderStatusEventStream    
     : IOrderStatusEventStream, IOrderStatusEventDispatcher
 {
-    private readonly Channel<OrderStatusChangedEvent> _channel = 
-        Channel.CreateUnbounded<OrderStatusChangedEvent>();
+    readonly List<Channel<OrderStatusChangedEvent>> _channels = new();
+    readonly object _lock = new();
 
-    public async Task PublishAsync(
-        OrderStatusChangedEvent evt,
-        CancellationToken ct = default)
+    public async Task PublishAsync(OrderStatusChangedEvent evt, CancellationToken ct = default)
     {
-        await _channel.Writer.WriteAsync(evt, ct);
-    }
+        List<Channel<OrderStatusChangedEvent>> channels;
 
-    public async IAsyncEnumerable<OrderStatusChangedEvent> Subscribe(
-        [EnumeratorCancellation] CancellationToken ct)
-    {
-        await foreach (var evt in _channel.Reader.ReadAllAsync(ct))
+        lock (_lock)
+            channels = _channels.ToList();
+
+        foreach (var c in channels)
         {
-            yield return evt;
+            await c.Writer.WriteAsync(evt, ct);
         }
+    }
+    public IAsyncEnumerable<OrderStatusChangedEvent> Subscribe(CancellationToken ct)
+    {
+        var channel = Channel.CreateUnbounded<OrderStatusChangedEvent>();
+
+        lock (_lock)
+            _channels.Add(channel);
+
+        return channel.Reader.ReadAllAsync(ct);
     }
 }

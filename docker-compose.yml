@@ -54,7 +54,6 @@ services:
     #     condition: service_healthy 
     environment:
       <<: *db-connection
-      # ConnectionStrings__MsSqlConnection: "Server=sql-server;Database=EGARDB;User=sa;Password=StrongP@ssw0rd!;TrustServerCertificate=true;MultipleActiveResultSets=true"
     restart: on-failure
     networks:
       - egarNetwork 

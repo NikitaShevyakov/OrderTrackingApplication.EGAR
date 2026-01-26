@@ -10,7 +10,7 @@ import {
   TextField
 } from '@mui/material';
 import { CreateOrderData } from "../../types/order";
-import useFieldValidation from "../../hooks/useFieldValidation";
+import useCreateOrderModal from "./useCreateOrderModal";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -28,50 +28,12 @@ interface CreateOrderModalProps {
 }
 
 export default function CreateOrderModal({ isOpen, onClose, onSubmit }: CreateOrderModalProps) {
-  const validateOrderNumber = (value: string) => {
-    if (!value.trim()) return 'Номер заказа обязателен';
-    if (value.length < 3) return 'Минимум 3 символа';
-    if (value.length > 20) return 'Максимум 20 символов';
-    if (!/^[A-Za-z0-9-]+$/.test(value)) return 'Только латинские буквы, цифры и дефисы';
-    return '';
-  };
-
-  const validateDescription = (value: string) => {
-    if (!value.trim()) return 'Описание обязательно';
-    if (value.length < 10) return 'Минимум 10 символов';
-    if (value.length > 50) return 'Максимум 50 символов';
-    return '';
-  };
-
-  const orderNumber = useFieldValidation('', validateOrderNumber);
-  const description = useFieldValidation('', validateDescription);
-
-  const resetForm = () => {
-    orderNumber.reset();
-    description.reset();
-  }
-
-  const handleClose = () => {
-    onClose();
-    resetForm();
-  }
-
-  const handleSubmit = () => {
-    const orderNumberError = orderNumber.validate();
-    const descriptionError = description.validate();
-
-    if (orderNumberError || descriptionError) {
-      return;
-    }
-
-    const data: CreateOrderData = {
-      orderNumber: orderNumber.value,
-      description: description.value
-    };
-    onSubmit(data);
-    resetForm();
-    onClose();
-  }
+  const {
+    orderNumber,
+    description,
+    handleClose,
+    handleSubmit
+  } = useCreateOrderModal({ onClose, onSubmit });
 
   return (
     <BootstrapDialog
