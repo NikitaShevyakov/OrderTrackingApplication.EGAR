@@ -10,7 +10,7 @@ import { getOrderStatusLabel, getStatusColor } from '../../../types/orderStatus'
 import { OrdersFilters } from '../../../Redux/types/ordersTypes';
 import TableContainer from '@mui/material/TableContainer';
 import { Link as RouterLink } from 'react-router-dom';
-import { Edit as EditIcon, DeleteForever as DeleteIcon, Delete  } from '@mui/icons-material';
+import { Edit as EditIcon, DeleteForever as DeleteIcon  } from '@mui/icons-material';
 import { formatDateTime } from '../../../utils/dateFormatter';
 
 interface OrdersTableProps {

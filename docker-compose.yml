@@ -1,16 +1,16 @@
-version: "1.0"
-
 networks:
   egarNetwork:
     driver: bridge
 
 x-common-environment: &common-environment
-  ConnectionStrings__MsSqlConnection: "Server=sql-server;Database=EGARDB;User=sa;Password=${SA_PASSWORD};TrustServerCertificate=true;MultipleActiveResultSets=true"
   RabbitMq__Host: "rabbitmq"
   RabbitMq__Port: "5672"
   RabbitMq__VirtualHost: "/"
-  RabbitMq__Username: "${RABBITMQ_DEFAULT_USER}"
-  RabbitMq__Password: "${RABBITMQ_DEFAULT_PASS}"
+  RabbitMq__Username: "admin"
+  RabbitMq__Password: "admin"
+
+x-db-connection: &db-connection
+  ConnectionStrings__MsSqlConnection: "Server=sql-server;Database=EGARDB;User=sa;Password=StrongP@ssw0rd!;TrustServerCertificate=true;MultipleActiveResultSets=true"
 
 services:
   sql-server:
@@ -29,9 +29,9 @@ services:
       test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "StrongP@ssw0rd!", "-Q", "SELECT 1"]
       interval: 10s
       timeout: 5s
-      retries: 10
-      start_period: 30s
-    
+      retries: 20
+      start_period: 40s
+      
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: egar-rabbitmq
@@ -45,38 +45,45 @@ services:
     networks:
       - egarNetwork
 
-  # egar-worker:
-  #   build:
-  #     context: ./back
-  #     dockerfile: EGAR.WorkerService/Dockerfile
-  #   container_name: egar-worker
-  #   restart: unless-stopped
-  #   depends_on:
-  #     sql-server:
-  #       condition: service_healthy
-  #   networks:
-  #     - egarNetwork
+  egar-sql-migrations:
+    build: 
+      context: ./back 
+      dockerfile: EGAR.Migrations/Dockerfile 
+    # depends_on: 
+    #   sql-server: 
+    #     condition: service_healthy 
+    environment:
+      <<: *db-connection
+      # ConnectionStrings__MsSqlConnection: "Server=sql-server;Database=EGARDB;User=sa;Password=StrongP@ssw0rd!;TrustServerCertificate=true;MultipleActiveResultSets=true"
+    restart: on-failure
+    networks:
+      - egarNetwork 
 
-  # egar-web-api:
-  #   build:
-  #     context: ./back
-  #     dockerfile: EGAR.Api/Dockerfile
-  #   ports:
-  #     - "5011:80"
-  #   restart: unless-stopped
-  #   depends_on:
-  #     sql-server:
-  #       condition: service_healthy
-  #   <<: *common-environment
-  #   networks:
-  #     - egarNetwork
+  egar-web-api:
+    build:
+      context: ./back
+      dockerfile: EGAR.Api/Dockerfile
+    ports:
+      - "5011:80"
+    restart: unless-stopped
+    # depends_on:
+    #   sql-server:
+    #     condition: service_healthy
+    environment:
+      <<:
+        - *db-connection
+        - *common-environment
+    networks:
+      - egarNetwork
 
-  # egar-web-ui:
-  #   build:
-  #     context: ./front
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "4173:4173"
-  #   restart: unless-stopped
-  #   networks:
-  #     - egarNetwork
+  egar-web-ui:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_OTA_URL=http://localhost:5011/api
+    ports:
+      - "4173:4173"      
+    restart: unless-stopped
+    networks:
+      - egarNetwork

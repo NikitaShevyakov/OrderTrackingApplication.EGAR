@@ -12,8 +12,8 @@ import { LabelValueItem } from '../types/labelValueItem';
 export interface SimpleSelectProps {
   label: string;
   options: LabelValueItem[];
-  value?: string;
-  onChange?: (value: string) => void;
+  value?: string | number;
+  onChange?: (value: string | number) => void;
   width?: number | string;
   disabled?: boolean;
 }
@@ -26,10 +26,10 @@ const SimpleSelect = ({
   width = 200,
   disabled = false
 }: SimpleSelectProps) => {
-  const [selectedValue, setSelectedValue] = useState<string>(value);
+  const [selectedValue, setSelectedValue] = useState<string | number>(value);
 
-  const handleChange = (event: SelectChangeEvent<string>) => {
-    const newValue = event.target.value;
+  const handleChange = (event: SelectChangeEvent<any>) => {
+    const newValue = event.target.value as string | number;
     setSelectedValue(newValue);
     if (onChange) {
       onChange(newValue);

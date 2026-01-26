@@ -28,8 +28,8 @@ export const getStatusColor = (status: Order['status']) => {
 };
 
 export const statusItems: LabelValueItem[] = Object.entries(OrderStatus)
-  .filter(([key, value]) => typeof value === 'number')
-  .map(([key, value]) => ({
+  .filter(([_, value]) => typeof value === 'number')
+  .map(([_, value]) => ({
     value: value as number,
     label: getOrderStatusLabel(value as OrderStatus),
   }));

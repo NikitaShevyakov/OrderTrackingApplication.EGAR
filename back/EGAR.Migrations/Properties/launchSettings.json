@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "EGAR.Migrations": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

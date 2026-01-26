@@ -6,7 +6,7 @@ import {
 } from "../../api/ordersApi";
 import { useParams } from "react-router-dom";
 import SimpleSelect from "../../components/SimpleSelect";
-import { statusItems } from "../../types/orderStatus";
+import { OrderStatus, statusItems } from "../../types/orderStatus";
 import { Order, OrderStatusChangedEvent } from "../../types/order";
 import { useOrderStatusSSE } from "../../api/useOrderStatusSSE";
 import OrderStatusHistory from "./OrderStatusHistory";
@@ -29,15 +29,18 @@ const OrderPage = () => {
     }
   }, [stream]);
 
-  if (!order && !isLoading) return <div>Данные отсутствуют!</div>;
-
   if (isLoading) return <div>Загрузка...</div>;
+  if (!order) return <div>Данные отсутствуют!</div>;
 
   const actualStatus = stream?.NewStatus ?? order.status;
   const actualChangedAt = stream?.ChangedAt ?? order.updatedAt;
 
-  const handlerChangeOrderStatus = async (status: string) => {
-    const orderStatus = parseInt(status) as OrderStatus;
+  const handlerChangeOrderStatus = async (status: string | number) => {
+    const orderStatus = typeof status === 'string' ? (parseInt(status, 10) as OrderStatus) : (status as OrderStatus);
+    if (!isValidId) {
+      console.error('Неверный id заказа, пропускаю изменение статуса');
+      return;
+    }
     await changeOrderStatus({ id: orderId, status: orderStatus }).unwrap()
       .catch((error) => {
         console.error("Ошибка при смене статуса", error);

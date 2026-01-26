@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace EGAR.Infrastructure.Data.MsSQL.Migrations
+namespace EGAR.Migrations.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
