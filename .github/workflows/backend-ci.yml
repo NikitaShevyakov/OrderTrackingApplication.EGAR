@@ -1,10 +1,10 @@
 name: Backend CI - Build & Unit Tests
 
 on:
-  push:
-    paths:
-      - 'back/**'
-      - '.github/workflows/backend-ci.yml'
+  # push:
+    # paths:
+    #   - 'back/**'
+    #   - '.github/workflows/backend-ci.yml'
     # branches: [ "main" ]
   pull_request:
     paths:
@@ -31,29 +31,35 @@ jobs:
     - name: Build backend solution
       run: dotnet build back/EGAR.Back.sln --no-restore --configuration Release
 
-    - name: Run Unit Tests
+    - name: Run tests and show immediate structure
       run: |
-        echo "🧪 Running xUnit tests..."
-       
+        echo "=== BEFORE running tests ==="
+        find . -name "*.trx" -o -name "*.xml" 2>/dev/null | sort || true
+        echo ""
+    
+        echo "=== RUNNING TESTS ==="
         dotnet test back/EGAR.UnitTests/EGAR.UnitTests.csproj \
-          --no-build \
           --configuration Release \
-          --logger "console;verbosity=quiet" \
-          --results-directory ./TestResults \
-          --nologo \
-          --verbosity quiet 2>&1 | grep -v "warning MSB4011" || true
-          
-        echo "✅ Tests completed!"
-        
-        echo "=== Test Results Summary ==="
-        find ./TestResults -name "*.xml" | while read file; do
-          echo "Test results file: $file"
-         
-          if [[ -f "$file" ]]; then
-            TOTAL=$(grep -o 'tests="[^"]*"' "$file" | head -1 | cut -d'"' -f2)
-            PASSED=$(grep -o 'passed="[^"]*"' "$file" | head -1 | cut -d'"' -f2)
-            FAILED=$(grep -o 'failed="[^"]*"' "$file" | head -1 | cut -d'"' -f2)
-            echo "Total: $TOTAL, Passed: $PASSED, Failed: $FAILED"
-          fi
-        done
+          --logger "trx;LogFileName=test-results.trx"
+    
+        echo ""
+        echo "=== IMMEDIATELY AFTER tests ==="
+        echo "Current dir: $(pwd)"
+        echo ""
+        echo "All .trx files now:"
+        find . -name "*.trx" 2>/dev/null | while read f; do
+          echo "- $f ($(ls -la "$f" | awk '{print $5}') bytes)"
+        done || echo "No .trx files"
+    
+        echo ""
+        echo "Full directory listing:"
+        ls -la
+    
+        echo ""
+        echo "Test project directory:"
+        ls -la back/EGAR.UnitTests/
+    
+        echo ""
+        echo "Bin directories:"
+        find back/EGAR.UnitTests/bin -name "*.trx" -o -name "*.xml" 2>/dev/null || true
         
