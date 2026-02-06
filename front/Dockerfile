@@ -1,6 +1,8 @@
 FROM node:20-slim
 WORKDIR /app
 
+EXPOSE 4173
+
 COPY package*.json ./
 RUN npm ci
 COPY . .
@@ -13,7 +15,5 @@ ENV VITE_PORT=4173
 ENV NODE_ENV=production
 
 RUN npm run build
-
-EXPOSE 4173
 
 CMD ["npm", "run", "preview"]

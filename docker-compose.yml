@@ -13,7 +13,7 @@ x-db-connection: &db-connection
   ConnectionStrings__MsSqlConnection: "Server=sql-server;Database=EGARDB;User=sa;Password=StrongP@ssw0rd!;TrustServerCertificate=true;MultipleActiveResultSets=true"
 
 services:
-  sql-server:
+  sql-server: 
     image: mcr.microsoft.com/mssql/server:2019-latest
     container_name: egar-sql-server
     restart: unless-stopped
@@ -23,14 +23,14 @@ services:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: "StrongP@ssw0rd!"
       MSSQL_PID: "Express"
-    networks:
-      - egarNetwork        
     healthcheck:
-      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "StrongP@ssw0rd!", "-Q", "SELECT 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 20
+      test: ["CMD", "/opt/mssql-tools18/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "StrongP@ssw0rd!", "-C", "-Q", "SELECT 1"]
+      timeout: 20s
+      retries: 10
       start_period: 40s
+    networks:
+      - egarNetwork
+
       
   rabbitmq:
     image: rabbitmq:3-management-alpine
@@ -49,9 +49,9 @@ services:
     build: 
       context: ./back 
       dockerfile: EGAR.Migrations/Dockerfile 
-    # depends_on: 
-    #   sql-server: 
-    #     condition: service_healthy 
+    depends_on: 
+      sql-server: 
+        condition: service_healthy 
     environment:
       <<: *db-connection
     restart: on-failure
@@ -65,9 +65,6 @@ services:
     ports:
       - "5011:80"
     restart: unless-stopped
-    # depends_on:
-    #   sql-server:
-    #     condition: service_healthy
     environment:
       <<:
         - *db-connection
