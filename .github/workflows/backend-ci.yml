@@ -28,9 +28,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: backend-build
-          path: |
-            back/**/bin/Release
-            back/**/obj/Release
+          path: back
       
   tests:
     runs-on: ubuntu-latest
@@ -59,11 +57,11 @@ jobs:
           find . -name "*.dll" -path "*/bin/Release/*" | head -20
           echo ""
           echo "=== Содержимое back/EGAR.UnitTests ==="
-          ls -la back/EGAR.UnitTests/bin/Release/net8.0/ || true
+          ls -la EGAR.UnitTests/bin/Release/net8.0/ || true
 
       - name: Running integration tests
         run: |
-          dotnet test back/EGAR.UnitTests/EGAR.UnitTests.csproj \
+          dotnet test EGAR.UnitTests/EGAR.UnitTests.csproj \
             --no-build \
             --configuration Release \
             --verbosity normal \
@@ -73,5 +71,5 @@ jobs:
         if: always()
         with:
           name: Integration tests results
-          path: "back/EGAR.UnitTests/TestResults/test_results.trx"
+          path: "EGAR.UnitTests/TestResults/test_results.trx"
           reporter: dotnet-trx 
