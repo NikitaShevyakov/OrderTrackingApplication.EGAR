@@ -82,10 +82,11 @@ jobs:
             --configuration Release \
             --verbosity normal \
             --logger "trx;LogFileName=test_results.trx"
+        continue-on-error: true
             
-      - uses: dorny/test-reporter@v1
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
-          name: Integration tests results
-          path: "back/EGAR.UnitTests/TestResults/test_results.trx"
-          reporter: dotnet-trx 
+          files: "back/EGAR.UnitTests/TestResults/test_results.trx"
