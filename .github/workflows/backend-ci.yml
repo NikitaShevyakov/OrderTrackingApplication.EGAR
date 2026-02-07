@@ -36,8 +36,13 @@ jobs:
       run: dotnet build back/EGAR.Back.sln --no-restore --configuration Release
 
     - name: Tests
-      run: dotnet test back/EGAR.UnitTests/EGAR.UnitTests.csproj --no-build --configuration Release --verbosity normal  --logger "trx;LogFileName=test_results.trx" 
-
+      run: |
+        dotnet test back/EGAR.UnitTests/EGAR.UnitTests.csproj \
+          --no-build \
+          --configuration Release \
+          --verbosity normal \
+          --logger "trx;LogFileName=test_results.trx"
+          
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: always() && (!cancelled()) 
