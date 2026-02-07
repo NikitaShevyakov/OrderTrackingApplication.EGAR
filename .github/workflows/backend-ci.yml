@@ -25,9 +25,10 @@ jobs:
         run: dotnet restore back/EGAR.Back.sln
         
       - name: Build backend solution
-        run: dotnet build back/EGAR.Back.sln \
-          --no-restore \
-          --configuration Release
+        run: |
+          dotnet build back/EGAR.Back.sln \
+            --no-restore \
+            --configuration Release
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
