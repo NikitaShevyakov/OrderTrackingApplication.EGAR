@@ -13,7 +13,8 @@ jobs:
       - name: Checkout repository 
         uses: actions/checkout@v4
         with:
-          sparse-checkout: back
+          sparse-checkout: |
+            back
           sparse-checkout-cone-mode: false
           
       - name: Show complete file tree
