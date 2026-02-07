@@ -29,13 +29,16 @@ jobs:
         with:
           name: backend-build
           path: back
+          retention-days: 1
       
   tests:
     runs-on: ubuntu-latest
     needs: build
+    
     permissions:
       checks: write
       pull-requests: write
+      
     steps:
       - name: Checkout repository 
         uses: actions/checkout@v4
@@ -50,14 +53,6 @@ jobs:
         with:
           name: backend-build
           path: .
-
-      - name: Check downloaded files
-        run: |
-          echo "=== Что скачалось ==="
-          find . -name "*.dll" -path "*/bin/Release/*" | head -20
-          echo ""
-          echo "=== Содержимое back/EGAR.UnitTests ==="
-          ls -la EGAR.UnitTests/bin/Release/net8.0/ || true
 
       - name: Running integration tests
         run: |
