@@ -61,7 +61,7 @@ jobs:
 
       - name: Running integration tests
         run: |
-          dotnet test EGAR.UnitTests/EGAR.UnitTests.csproj \
+          dotnet test back/EGAR.UnitTests/EGAR.UnitTests.csproj \
             --no-build \
             --configuration Release \
             --verbosity normal \
@@ -71,5 +71,5 @@ jobs:
         if: always()
         with:
           name: Integration tests results
-          path: "EGAR.UnitTests/TestResults/test_results.trx"
+          path: "back/EGAR.UnitTests/TestResults/test_results.trx"
           reporter: dotnet-trx 
