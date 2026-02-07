@@ -48,10 +48,4 @@ jobs:
       if: always() && (!cancelled()) 
       with:
         files: "back/EGAR.UnitTests/TestResults/test_results.trx"
-    
-    # - name: Upload test results
-    #   uses: actions/upload-artifact@v4
-    #   with:
-    #     name: test-results
-    #     path: back/EGAR.UnitTests/TestResults/**/*.trx
         
