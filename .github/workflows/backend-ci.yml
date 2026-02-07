@@ -46,6 +46,12 @@ jobs:
       pull-requests: write
       
     steps:        
+      - name: Checkout repository 
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: back
+          sparse-checkout-cone-mode: false
+
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
