@@ -52,6 +52,21 @@ jobs:
         with:
           name: backend-build
 
+      - name: Check downloaded files
+        run: |
+          echo "=== Что скачалось ==="
+          find . -name "*.dll" -path "*/bin/Release/*" | head -20
+          echo ""
+          echo "=== Содержимое back/EGAR.UnitTests ==="
+          ls -la back/EGAR.UnitTests/bin/Release/net8.0/ || true
+
+      - name: Running tests
+        run: |
+          dotnet test back/EGAR.UnitTests/EGAR.UnitTests.csproj \
+            --no-build \
+            --configuration Release \
+            --logger "trx;LogFileName=test_results.trx"
+
       - name: Running integration tests
         run: |
           dotnet test back/EGAR.UnitTests/EGAR.UnitTests.csproj \
