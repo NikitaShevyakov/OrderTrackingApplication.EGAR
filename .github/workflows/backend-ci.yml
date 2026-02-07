@@ -1,24 +1,14 @@
 name: Backend CI - Build & Unit Tests
 
 on:
-  # push:
-    # paths:
-    #   - 'back/**'
-    #   - '.github/workflows/backend-ci.yml'
-    # branches: [ "main" ]
   pull_request:
     paths:
       - 'back/**'
       - '.github/workflows/backend-ci.yml'
-    # branches: [ "main" ]
 
 jobs:
   backend-tests:
     runs-on: ubuntu-latest
-
-    permissions:
-      checks: write
-      pull-requests: write
 
     steps:
     - name: Checkout repository
@@ -35,17 +25,19 @@ jobs:
     - name: Build backend solution
       run: dotnet build back/EGAR.Back.sln --no-restore --configuration Release
 
-    - name: Tests
+    - name: Running integration tests
       run: |
         dotnet test back/EGAR.UnitTests/EGAR.UnitTests.csproj \
           --no-build \
           --configuration Release \
           --verbosity normal \
-          --logger "trx;LogFileName=test_results.trx"
-          
-    - name: Publish Test Results
-      uses: EnricoMi/publish-unit-test-result-action@v2
-      if: always() && (!cancelled()) 
+          --logger "trx;LogFileName=test_results.trx"          
+
+    - name: Integration tests results
+      uses: dorny/test-reporter@v1
+      if: always()
       with:
-        files: "back/EGAR.UnitTests/TestResults/test_results.trx"
+        name: 🧪 xUnit Tests
+        path: "back/EGAR.UnitTests/TestResults/test_results.trx"
+        reporter: dotnet-trx
         
