@@ -61,7 +61,7 @@ jobs:
 
       - name: Running integration tests
         run: |
-          dotnet test EGAR.UnitTests/EGAR.UnitTests.csproj \
+          dotnet test \
             --no-build \
             --configuration Release \
             --verbosity normal \
