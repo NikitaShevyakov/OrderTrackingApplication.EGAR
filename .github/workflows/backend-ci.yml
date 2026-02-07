@@ -25,7 +25,9 @@ jobs:
         run: dotnet restore back/EGAR.Back.sln
         
       - name: Build backend solution
-        run: dotnet build back/EGAR.Back.sln --no-restore --configuration Release
+        run: dotnet build back/EGAR.Back.sln \
+          --no-restore \
+          --configuration Release
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -43,28 +45,20 @@ jobs:
       pull-requests: write
       
     steps:        
-      - name: Checkout repository 
-        uses: actions/checkout@v4
-        with:
-          sparse-checkout: back
-          sparse-checkout-cone-mode: false
-        
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
           
-      - name: Restore dependencies
-        run: dotnet restore back/EGAR.Back.sln
-        
-      - name: Build backend solution
-        run: dotnet build back/EGAR.Back.sln --no-restore --configuration Release
-          
-      # - name: Download build artifacts
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: backend-build
-      #     path: back
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-build
+          path: back
+
+      - name: Fix execute permissions
+        run: |
+          find back/EGAR.UnitTests/bin -type f -exec chmod +x {} \; 2>/dev/null || true
 
       # - name: Show complete file tree
       #   run: |
