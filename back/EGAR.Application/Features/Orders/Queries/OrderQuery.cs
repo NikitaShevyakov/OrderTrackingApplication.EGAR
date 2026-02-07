@@ -20,7 +20,6 @@ public class OrderQueryHandler : IRequestHandler<OrderQuery, Result<Order>>
     public async Task<Result<Order>> Handle(OrderQuery q, CancellationToken ct = default)
     {
         throw new Exception();
-        throw new Exception();
 
         if (q.Id <=0)
             return Result<Order>.Failure(ErrorType.Validation, $"Parameter 'Id' must be a positive integer greater than 0. Received: {q.Id}");
