@@ -12,6 +12,11 @@ jobs:
     steps:
       - name: Checkout repository 
         uses: actions/checkout@v4
+
+      - name: Show complete file tree
+        run: |
+          echo "=== Directory tree ==="
+          find . -type d | sort
         
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
