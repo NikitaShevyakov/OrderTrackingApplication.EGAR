@@ -51,6 +51,14 @@ jobs:
           name: backend-build
           path: .
 
+      - name: Show complete file tree
+        run: |
+          echo "=== Complete file tree ==="
+          find . -type f | sort
+          echo ""
+          echo "=== Directory tree ==="
+          find . -type d | sort
+
       - name: Running integration tests
         run: |
           dotnet test EGAR.UnitTests/EGAR.UnitTests.csproj \
