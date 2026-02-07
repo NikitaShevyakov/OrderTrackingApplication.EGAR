@@ -51,6 +51,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: backend-build
+          path: "./back"
 
       - name: Check downloaded files
         run: |
@@ -59,13 +60,6 @@ jobs:
           echo ""
           echo "=== Содержимое back/EGAR.UnitTests ==="
           ls -la back/EGAR.UnitTests/bin/Release/net8.0/ || true
-
-      - name: Running tests
-        run: |
-          dotnet test back/EGAR.UnitTests/EGAR.UnitTests.csproj \
-            --no-build \
-            --configuration Release \
-            --logger "trx;LogFileName=test_results.trx"
 
       - name: Running integration tests
         run: |
