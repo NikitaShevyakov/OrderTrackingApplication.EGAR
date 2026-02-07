@@ -37,11 +37,11 @@ jobs:
           --verbosity normal \
           --logger "trx;LogFileName=test_results.trx"          
 
-    - name: Integration tests results
+    - name: Publish Result Integration tests 
       uses: dorny/test-reporter@v1
       if: always()
       with:
-        name: 🧪 xUnit Tests
+        name: Integration tests results
         path: "back/EGAR.UnitTests/TestResults/test_results.trx"
         reporter: dotnet-trx
         
