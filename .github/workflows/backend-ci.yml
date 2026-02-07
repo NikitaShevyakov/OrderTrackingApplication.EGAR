@@ -67,14 +67,6 @@ jobs:
         run: |
           find back/EGAR.UnitTests/bin -type f -exec chmod +x {} \; 2>/dev/null || true
 
-      # - name: Show complete file tree
-      #   run: |
-      #     echo "=== Complete file tree ==="
-      #     find . -type f | sort
-      #     echo ""
-      #     echo "=== Directory tree ==="
-      #     find . -type d | sort
-
       - name: Running integration tests
         run: |
           dotnet test back/EGAR.UnitTests/EGAR.UnitTests.csproj \
