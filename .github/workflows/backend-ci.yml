@@ -1,59 +1,84 @@
 name: Backend CI - Build & Unit Tests
 
 on:
-  push:
-    paths:
-      - 'back/**'
-      - '.github/workflows/backend-ci.yml'
-    # branches: [ "main" ]
   pull_request:
     paths:
       - 'back/**'
       - '.github/workflows/backend-ci.yml'
-    # branches: [ "main" ]
 
 jobs:
-  backend-tests:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
-    - name: Setup .NET SDK
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '8.0.x'
-
-    - name: Restore dependencies
-      run: dotnet restore back/EGAR.Back.sln
-
-    - name: Build backend solution
-      run: dotnet build back/EGAR.Back.sln --no-restore --configuration Release
-
-    - name: Run Unit Tests
-      run: |
-        echo "🧪 Running xUnit tests..."
-       
-        dotnet test back/EGAR.UnitTests/EGAR.UnitTests.csproj \
-          --no-build \
-          --configuration Release \
-          --logger "console;verbosity=quiet" \
-          --results-directory ./TestResults \
-          --nologo \
-          --verbosity quiet 2>&1 | grep -v "warning MSB4011" || true
+      - name: Checkout repository 
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: back
+          sparse-checkout-cone-mode: false
+        
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
           
-        echo "✅ Tests completed!"
+      - name: Restore dependencies
+        run: dotnet restore back/EGAR.Back.sln
         
-        echo "=== Test Results Summary ==="
-        find ./TestResults -name "*.xml" | while read file; do
-          echo "Test results file: $file"
-         
-          if [[ -f "$file" ]]; then
-            TOTAL=$(grep -o 'tests="[^"]*"' "$file" | head -1 | cut -d'"' -f2)
-            PASSED=$(grep -o 'passed="[^"]*"' "$file" | head -1 | cut -d'"' -f2)
-            FAILED=$(grep -o 'failed="[^"]*"' "$file" | head -1 | cut -d'"' -f2)
-            echo "Total: $TOTAL, Passed: $PASSED, Failed: $FAILED"
-          fi
-        done
-        
+      - name: Build backend solution
+        run: |
+          dotnet build back/EGAR.Back.sln \
+            --no-restore \
+            --configuration Release
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-build
+          path: back
+          retention-days: 1
+      
+  tests:
+    runs-on: ubuntu-latest
+    needs: build
+    
+    permissions:
+      checks: write
+      pull-requests: write
+      
+    steps:        
+      - name: Checkout repository 
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: back
+          sparse-checkout-cone-mode: false
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+          
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-build
+          path: back
+
+      - name: Fix execute permissions
+        run: |
+          find back/EGAR.UnitTests/bin -type f -exec chmod +x {} \; 2>/dev/null || true
+
+      - name: Running integration tests
+        run: |
+          dotnet test back/EGAR.UnitTests/EGAR.UnitTests.csproj \
+            --no-build \
+            --configuration Release \
+            --verbosity normal \
+            --logger "trx;LogFileName=test_results.trx"
+        continue-on-error: true
+            
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: "back/EGAR.UnitTests/TestResults/test_results.trx"
