@@ -31,35 +31,9 @@ jobs:
     - name: Build backend solution
       run: dotnet build back/EGAR.Back.sln --no-restore --configuration Release
 
-    - name: Run tests and show immediate structure
+    - name: Tests 
       run: |
-        echo "=== BEFORE running tests ==="
-        find . -name "*.trx" -o -name "*.xml" 2>/dev/null | sort || true
-        echo ""
-    
-        echo "=== RUNNING TESTS ==="
         dotnet test back/EGAR.UnitTests/EGAR.UnitTests.csproj \
-          --configuration Release \
-          --logger "trx;LogFileName=test-results.trx"
-    
-        echo ""
-        echo "=== IMMEDIATELY AFTER tests ==="
-        echo "Current dir: $(pwd)"
-        echo ""
-        echo "All .trx files now:"
-        find . -name "*.trx" 2>/dev/null | while read f; do
-          echo "- $f ($(ls -la "$f" | awk '{print $5}') bytes)"
-        done || echo "No .trx files"
-    
-        echo ""
-        echo "Full directory listing:"
-        ls -la
-    
-        echo ""
-        echo "Test project directory:"
-        ls -la back/EGAR.UnitTests/
-    
-        echo ""
-        echo "Bin directories:"
-        find back/EGAR.UnitTests/bin -name "*.trx" -o -name "*.xml" 2>/dev/null || true
+          --no-build \
+          --verbosity normal
         
