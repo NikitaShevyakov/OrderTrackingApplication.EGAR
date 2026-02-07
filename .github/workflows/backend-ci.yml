@@ -16,6 +16,10 @@ jobs:
   backend-tests:
     runs-on: ubuntu-latest
 
+    permissions:
+      checks: write
+      pull-requests: write
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -36,7 +40,7 @@ jobs:
 
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action@v2
-      if: (!cancelled())
+      if: always() && (!cancelled()) 
       with:
         files: "back/EGAR.UnitTests/TestResults/test_results.trx"
     
