@@ -36,8 +36,8 @@ jobs:
         dotnet test back/EGAR.UnitTests/EGAR.UnitTests.csproj \
           --no-build \
           --configuration Release \
-          --verbosity normal \          
-          --logger "trx;LogFileName=test_results.trx" 
+          --verbosity normal 
+    #\ --logger "trx;LogFileName=test_results.trx" 
 
     #- name: Publish Test Results
     #  uses: EnricoMi/publish-unit-test-result-action@v2
