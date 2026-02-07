@@ -13,14 +13,8 @@ jobs:
       - name: Checkout repository 
         uses: actions/checkout@v4
         with:
-          sparse-checkout: |
-            back
+          sparse-checkout: back
           sparse-checkout-cone-mode: false
-          
-      - name: Show complete file tree
-        run: |
-          echo "=== Directory tree ==="
-          find . -type d | sort
         
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
