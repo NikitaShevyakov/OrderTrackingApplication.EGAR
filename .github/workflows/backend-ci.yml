@@ -10,12 +10,27 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - name: Checkout repository 
+        uses: actions/checkout@v4
+        
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-      - run: dotnet restore back/EGAR.Back.sln
-      - run: dotnet build back/EGAR.Back.sln --no-restore --configuration Release
+          
+      - name: Restore dependencies
+        run: dotnet restore back/EGAR.Back.sln
+        
+      - name: Build backend solution
+        run: dotnet build back/EGAR.Back.sln --no-restore --configuration Release
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-build
+          path: |
+            back/**/bin/Release
+            back/**/obj/Release
       
   tests:
     runs-on: ubuntu-latest
@@ -24,17 +39,28 @@ jobs:
       checks: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - name: Checkout repository 
+        uses: actions/checkout@v4
+        
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-      - run: dotnet restore back/EGAR.Back.sln
-      - run: |
+          
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-build
+          path: ./artifacts
+
+      - name: Running integration tests
+        run: |
           dotnet test back/EGAR.UnitTests/EGAR.UnitTests.csproj \
             --no-build \
             --configuration Release \
             --verbosity normal \
-            --logger "trx;LogFileName=test_results.trx"   
+            --logger "trx;LogFileName=test_results.trx"
+            
       - uses: dorny/test-reporter@v1
         if: always()
         with:
